@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Expense Tracker</h1>
+      <p>FastAPI + PostgreSQL</p>
+    </div>
+    <button id="logoutBtn" class="secondary hidden">Logout</button>
+  </header>
+
+  <main class="container">
+    <section id="authSection" class="card auth-card">
+      <div class="tabs">
+        <button id="loginTab" class="tab active">Login</button>
+        <button id="registerTab" class="tab">Register</button>
+      </div>
+
+      <form id="authForm">
+        <div id="nameGroup" class="field hidden">
+          <label for="name">Name</label>
+          <input id="name" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" required />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" required />
+        </div>
+
+        <button id="authSubmit" type="submit">Login</button>
+      </form>
+      <p id="authMessage" class="message"></p>
+    </section>
+
+    <section id="appSection" class="hidden">
+      <div class="grid stats">
+        <div class="card stat">
+          <span>Total Expense</span>
+          <strong id="totalExpense">₹0</strong>
+        </div>
+        <div class="card stat">
+          <span>Total Count</span>
+          <strong id="totalCount">0</strong>
+        </div>
+        <div class="card stat">
+          <span>Average Expense</span>
+          <strong id="averageExpense">₹0</strong>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <section class="card">
+          <h2>Add Expense</h2>
+          <form id="expenseForm">
+            <div class="field">
+              <label for="title">Title</label>
+              <input id="title" type="text" minlength="3" maxlength="50" required />
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="amount">Amount</label>
+                <input id="amount" type="number" min="0.01" step="0.01" required />
+              </div>
+
+              <div class="field">
+                <label for="category">Category</label>
+                <select id="category" required>
+                  <option value="">Select</option>
+                  <option>Food</option>
+                  <option>Travel</option>
+                  <option>Shopping</option>
+                  <option>Bills</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="description">Description</label>
+              <textarea id="description" maxlength="200"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="expenseDate">Expense Date</label>
+              <input id="expenseDate" type="date" required />
+            </div>
+
+            <button type="submit">Add Expense</button>
+            <p id="expenseMessage" class="message"></p>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Filters</h2>
+          <div class="row">
+            <div class="field">
+              <label for="filterCategory">Category</label>
+              <select id="filterCategory">
+                <option value="">All</option>
+                <option>Food</option>
+                <option>Travel</option>
+                <option>Shopping</option>
+                <option>Bills</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="minAmount">Min Amount</label>
+              <input id="minAmount" type="number" min="0" step="0.01" />
+            </div>
+            <div class="field">
+              <label for="maxAmount">Max Amount</label>
+              <input id="maxAmount" type="number" min="0" step="0.01" />
+            </div>
+          </div>
+
+          <div class="row">
+            <button id="applyFilters" type="button">Apply</button>
+            <button id="clearFilters" type="button" class="secondary">Clear</button>
+          </div>
+
+          <div id="categorySummary" class="summary-box"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>My Expenses</h2>
+            <p id="userInfo" class="muted"></p>
+          </div>
+          <button id="refreshBtn" class="secondary">Refresh</button>
+        </div>
+
+        <div id="expenseList" class="expense-list"></div>
+
+        <div class="pagination">
+          <button id="prevBtn" class="secondary">Previous</button>
+          <span id="pageInfo">Page 1</span>
+          <button id="nextBtn" class="secondary">Next</button>
+        </div>
+      </section>
+
+      <p id="globalMessage" class="message"></p>
+    </section>
+
+    <div id="editModal" class="modal hidden">
+      <div class="modal-content card">
+        <div class="section-head">
+          <h2>Edit Expense</h2>
+          <button id="closeEditBtn" type="button" class="secondary">Close</button>
+        </div>
+
+        <form id="editForm">
+          <div class="field">
+            <label for="editTitle">Title</label>
+            <input id="editTitle" type="text" minlength="3" maxlength="50" required />
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="editAmount">Amount</label>
+              <input id="editAmount" type="number" min="0.01" step="0.01" required />
+            </div>
+
+            <div class="field">
+              <label for="editCategory">Category</label>
+              <select id="editCategory" required>
+                <option value="">Select</option>
+                <option>Food</option>
+                <option>Travel</option>
+                <option>Shopping</option>
+                <option>Bills</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="editDescription">Description</label>
+            <textarea id="editDescription" maxlength="200"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="editExpenseDate">Expense Date</label>
+            <input id="editExpenseDate" type="date" required />
+          </div>
+
+          <div class="row">
+            <button id="saveEditBtn" type="submit">Save Changes</button>
+            <button id="cancelEditBtn" type="button" class="secondary">Cancel</button>
+          </div>
+          <p id="editMessage" class="message"></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
