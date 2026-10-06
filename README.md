@@ -251,6 +251,6 @@ Example:
 
 ## Author
 
-**Krish**
+**Krishna**
 
 Built as a practical full-stack FastAPI project for learning and portfolio development.
