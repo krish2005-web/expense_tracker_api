@@ -254,3 +254,28 @@ Example:
 **Krishna**
 
 Built as a practical full-stack FastAPI project for learning and portfolio development.
+
+
+## Render deployment
+
+A simple free-demo deployment can run without a managed PostgreSQL service because the app
+falls back to SQLite when `DATABASE_URL` is not provided.
+
+Build command:
+
+```bash
+pip install -r requirements.txt && alembic upgrade head
+```
+
+Start command:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+The repository also includes `render.yaml`. For the free demo deployment, SQLite tables are initialized at application startup.
+
+**Important:** Render Free web services do not provide persistent local filesystem storage,
+so the SQLite database and uploaded receipt files are suitable for a demo but not for durable
+production data. For a persistent deployment, connect the app to hosted PostgreSQL and set
+`DATABASE_URL` in the service environment.

@@ -194,16 +194,17 @@ def upload_receipt(
     upload_dir = Path("uploads")
     upload_dir.mkdir(exist_ok=True)
 
-    filename = f"{uuid.uuid4()}_{file.filename}"
+    original_name = Path(file.filename or "receipt").name
+    filename = f"{uuid.uuid4()}_{original_name}"
     file_path = upload_dir / filename
+
+    with file_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
 
     expense.receipt_path = str(file_path)
 
     db.commit()
     db.refresh(expense)
-
-    with file_path.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
 
     return {
     "message": "Receipt uploaded successfully",

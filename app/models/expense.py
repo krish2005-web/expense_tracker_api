@@ -10,7 +10,7 @@ class Expense(Base):
     category=Column(String(50),nullable=False)
     description=Column(Text,nullable=True)
     expense_date=Column(Date,nullable=False)
-    created_at=Column(DateTime,nullable=False,default=datetime.utcnow())
+    created_at=Column(DateTime,nullable=False,default=datetime.utcnow)
     user_id=Column(Integer,ForeignKey("users.id"),nullable=False)
     receipt_path = Column(String(255), nullable=True)
 

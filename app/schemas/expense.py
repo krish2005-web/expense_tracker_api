@@ -35,7 +35,7 @@ class ExpenseResponse(BaseModel):
     title:str
     amount:float
     category:str
-    description:str
+    description:str | None = None
     expense_date:date
     created_at:datetime
     user_id:int
