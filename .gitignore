@@ -23,3 +23,7 @@ Thumbs.db
 # Uploaded user files
 uploads/*
 !uploads/.gitkeep
+# Local SQLite databases
+*.db
+*.sqlite
+*.sqlite3

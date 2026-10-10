@@ -279,3 +279,21 @@ The repository also includes `render.yaml`. For the free demo deployment, SQLite
 so the SQLite database and uploaded receipt files are suitable for a demo but not for durable
 production data. For a persistent deployment, connect the app to hosted PostgreSQL and set
 `DATABASE_URL` in the service environment.
+
+## Render deployment (free demo)
+
+This repository can run a demo without a managed PostgreSQL instance by using SQLite when
+`DATABASE_URL` is not configured. The SQLite tables are created during application startup.
+
+- Build command: `pip install -r requirements.txt`
+- Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Health check path: `/health`
+- Frontend: served by FastAPI from the `frontend/` directory at `/`
+- API docs: `/docs`
+
+**Persistence warning:** a SQLite file and uploaded files on a free web service's local
+filesystem are not durable deployment storage. Database data and uploads may disappear on
+redeploy/restart. Use a hosted PostgreSQL database for durable data.
+
+For local PostgreSQL development, set `DATABASE_URL` in your `.env` and run
+`alembic upgrade head` before starting the app. The no-database SQLite fallback is for demo use.

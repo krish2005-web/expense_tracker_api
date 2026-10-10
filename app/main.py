@@ -20,6 +20,8 @@ app=FastAPI()
 
 @app.on_event("startup")
 async def initialize_database():
+    # For the no-paid-database Render demo, create the SQLite schema before
+    # serving requests. PostgreSQL deployments should use Alembic migrations.
     if settings.DATABASE_URL.startswith("sqlite"):
         Base.metadata.create_all(bind=engine)
         print("SQLite tables ready at startup")
@@ -99,11 +101,10 @@ app.add_middleware(
 def me(current_user = Depends(get_current_user)):
     return current_user
 
-@app.get("/")
-def home():
-    return {
-        "message": "Expense Tracker API is running"
-    }
+@app.get("/health", include_in_schema=False)
+def health():
+    return {"status": "ok"}
+
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 app.mount(
